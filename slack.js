@@ -7,9 +7,19 @@ const sendToSlackUrl = process.env.SLACK_URL
 const createMessage = cards => {
     console.log(cards)
 
+    const cardBlocks = cards.map(createMessageBlock).flat()
+    const blocks = [createHeaderBlock(cards.length)].concat(cardBlocks)
+
     return {
-        text: 'New cards were spoiled!',
-        blocks: [].concat.apply([], cards.map(createMessageBlock))
+        text: `${cards.length} new card(s) have been spoiled!`,
+        blocks
+    }
+}
+
+const createHeaderBlock = length => {
+    return {
+        type: 'section',
+        text: { type: 'mrkdwn', text: `*${length} new card(s) have been spoiled!*`}
     }
 }
 
@@ -18,13 +28,22 @@ const createMessageBlock = card => {
     const imageBlock = {
         type: 'image',
         image_url: card.picture,
-        alt_text: card.picture
+        alt_text: card.picture,
+        title: {
+            type: 'plain_text',
+            text: card.name
+        }
     }
     const textBlock = {
-        type: 'section',
-        text: { type: 'mrkdwn', text: `<${card.card_uri}|${card.name}>\n<${card.set_uri}|${card.set_name}>` }
+        type: 'context',
+        elements: [
+            { type: 'mrkdwn', text: `<${card.card_uri}|${card.name}>` },
+            { type: 'mrkdwn', text: `<${card.set_uri}|${card.set_name}>` }
+        ]
     }
-    return [imageBlock, textBlock]
+
+    const dividerBlock = {type: 'divider'}
+    return [imageBlock, textBlock, dividerBlock]
 }
 
 const sendToChat = message => {
