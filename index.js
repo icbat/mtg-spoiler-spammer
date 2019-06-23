@@ -10,6 +10,7 @@ const handleError = error => {
 }
 
 cards.getCards()
+    .then(limitResponse(3))
     .then(cards.parseResponse)
     // TODO filter out the ones we've already sent
     .then(cards => {
@@ -17,7 +18,6 @@ cards.getCards()
         return cards
     })
     // TODO .then( if there's more than N, consolidate)
-    .then(limitResponse(3))
     .then(slack.createMessage)
     .then(slack.sendToChat)
     .catch(handleError)
