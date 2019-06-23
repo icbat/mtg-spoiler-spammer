@@ -6,6 +6,7 @@
   "author": "Evan Cobb <icbat@pm.me>",
   "license": "MIT",
   "dependencies": {
-    "got": "^9.6.0"
+    "got": "^9.6.0",
+    "redis": "^2.8.0"
   }
 }
