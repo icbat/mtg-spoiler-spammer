@@ -1,7 +1,19 @@
 const got = require('got')
 
 
-const getNewCardsUrl = "https://api.scryfall.com/cards?order=spoiled"
+
+const getCards = () => {
+    const searchOptions = [
+        // You must have a query, this one is pretty loose
+        'q=lang:en',
+        'order=spoiled',
+        'include_extras=false',
+        'unique=cards',
+    ]
+    const searchQuery = searchOptions.join('&')
+    const getNewCardsUrl = "https://api.scryfall.com/cards/search?" + searchQuery
+    return got.get(getNewCardsUrl)
+}
 
 const parseResponse = resp => {
     console.log('response resceived')
@@ -21,10 +33,6 @@ const parseResponse = resp => {
 const trimToRelevantFields = card => {
     const { set_name, name, scryfall_uri, set_uri, image_uris: { large } } = card
     return { set_name, name, card_uri: scryfall_uri, set_uri, picture: large }
-}
-
-const getCards = () => {
-    return got.get(getNewCardsUrl)
 }
 
 module.exports = {
