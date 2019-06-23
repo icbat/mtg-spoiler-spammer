@@ -15,7 +15,8 @@ cards.getCards()
     .then(limitResponse(3))
     // TODO filter out the ones we've already sent
     .then(cards => {
-        db.setLastSeenCard(cards[0].name)
+        const lastSeen = db.setLastSeenCard(cards[0].name)
+        console.log('last seen', lastSeen)
         return cards
     })
     // TODO .then( if there's more than N, consolidate)
