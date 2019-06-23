@@ -10,8 +10,9 @@ const handleError = error => {
 }
 
 cards.getCards()
-    .then(limitResponse(3))
     .then(cards.parseResponse)
+    .then(cardList => cards.trimToRelevantFields(cardList))
+    .then(limitResponse(3))
     // TODO filter out the ones we've already sent
     .then(cards => {
         db.setLastSeenCard(cards[0].name)
