@@ -1,5 +1,5 @@
-const cards = require('./cards')
-const slack = require('./slack')
+const cards = require('./lib/cards')
+const slack = require('./lib/slack')
 
 
 const limitResponse = n => cards => cards.slice(0, n)
