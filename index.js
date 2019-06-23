@@ -11,7 +11,7 @@ const handleError = error => {
 
 cards.getCards()
     .then(cards.parseResponse)
-    .then(cardList => cards.trimToRelevantFields(cardList))
+    .then(cardList => cardList.map(cards.trimToRelevantFields))
     .then(limitResponse(3))
     // TODO filter out the ones we've already sent
     .then(cards => {
