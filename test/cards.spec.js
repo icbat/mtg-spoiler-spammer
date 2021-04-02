@@ -56,3 +56,11 @@ describe('getCards', () => {
     results.map(card => cards.trimToRelevantFields(card))
   })
 })
+
+describe('getSets', () => {
+  test('sanity check', async () => {
+    const result = await cards.getSets()
+
+    expect(result).toEqual(expect.any(Array))
+  })
+})
