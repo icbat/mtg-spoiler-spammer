@@ -14,7 +14,6 @@ const truncateCards = cards => {
 
 exports.main = () => {
   return cards.getCards()
-    .then(cards.parseResponse)
     .then(cardList => cardList.map(cards.trimToRelevantFields))
     .then(db.filterSeenCards)
     .then(truncateCards)

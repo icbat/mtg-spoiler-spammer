@@ -1,6 +1,6 @@
 const got = require('got')
 
-const getCards = () => {
+const getCards = async () => {
   const searchOptions = [
     // You must have a query, this one is pretty loose
     'q=lang:en',
@@ -11,7 +11,8 @@ const getCards = () => {
   const searchQuery = searchOptions.join('&')
   const getNewCardsUrl = 'https://api.scryfall.com/cards/search?' + searchQuery
   console.log('Fetching cards from', getNewCardsUrl)
-  return got.get(getNewCardsUrl)
+  const result = await got.get(getNewCardsUrl)
+  return parseResponse(result)
 }
 
 const parseResponse = resp => {
@@ -44,6 +45,5 @@ const getPicture = card => {
 
 module.exports = {
   getCards,
-  parseResponse,
   trimToRelevantFields,
 }

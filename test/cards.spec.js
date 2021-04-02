@@ -1,9 +1,7 @@
-const cards = require('../lib/cards')
+const cards = require('../src/cards')
 
 const exampleCardNormal = require('./example-card-normal.json')
 const exampleCardDFC = require('./example-card-doublefaced.json')
-
-jest.mock('got')
 
 describe('trimToRelevantFields', () => {
   const expectedKeys = ['card_uri', 'name', 'picture', 'set_name', 'set_uri']
@@ -42,5 +40,19 @@ describe('trimToRelevantFields', () => {
     const result = cards.trimToRelevantFields(exampleCardDFC)
 
     expect(result.picture).toEqual('https://c1.scryfall.com/file/scryfall-cards/normal/front/0/2/028aeebc-4073-4595-94da-02f9f96ea148.jpg?1562825445')
+  })
+})
+
+describe('getCards', () => {
+  test('sanity check', async () => {
+    const result = await cards.getCards()
+
+    expect(result).toEqual(expect.any(Array))
+  })
+
+  test('can trim a page of responses', async () => {
+    const results = await cards.getCards()
+
+    results.map(card => cards.trimToRelevantFields(card))
   })
 })
