@@ -1,3 +1,3 @@
-const { main } = require('./src/index')
+const { main } = require('./src/main')
 
 main()

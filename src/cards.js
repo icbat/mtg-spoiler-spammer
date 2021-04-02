@@ -14,12 +14,6 @@ const getCards = () => {
   return parseResponse(getNewCardsUrl)
 }
 
-const getSets = () => {
-  const getNewCardsUrl = 'https://api.scryfall.com/sets'
-  console.log('Fetching sets from', getNewCardsUrl)
-  return parseResponse(getNewCardsUrl)
-}
-
 const parseResponse = async (url) => {
   const resp = await got.get(url)
   const body = JSON.parse(resp.body)
@@ -46,6 +40,5 @@ const getPicture = card => {
 
 module.exports = {
   getCards,
-  getSets,
   trimToRelevantFields,
 }

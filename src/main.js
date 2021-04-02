@@ -1,10 +1,6 @@
-const cards = require('./cards')
+const { getCards, trimToRelevantFields } = require('./cards')
 const slack = require('./slack')
-const db = require('./db')
-
-const handleError = error => {
-  console.log(error)
-}
+const cache = require('./db')
 
 const truncateCards = cards => {
   const length = Math.min(cards.length, 5)
@@ -12,12 +8,17 @@ const truncateCards = cards => {
   return cards.slice(0, length)
 }
 
-exports.main = () => {
-  return cards.getCards()
-    .then(cardList => cardList.map(cards.trimToRelevantFields))
-    .then(db.filterSeenCards)
-    .then(truncateCards)
-    .then(slack.createMessage)
-    .then(slack.sendToChat)
-    .catch(handleError)
+exports.main = async () => {
+  const cards = await getCards()
+  const trimmed = cards.map(trimToRelevantFields)
+
+  const lastSeen = await cache.getset('last seen card name', trimmed[0].name)
+
+  const names = trimmed.map(({ name }) => name)
+  const index = names.indexOf(lastSeen)
+  console.log("the last card we've seen is at index", index, lastSeen)
+  const newCards = trimmed.slice(0, index)
+  const truncated = truncateCards(newCards)
+
+  return truncated
 }
