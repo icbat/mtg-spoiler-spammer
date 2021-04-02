@@ -12,6 +12,7 @@
         "ecmaVersion": 12
     },
     "rules": {
-        "camelcase":"off"
+        "camelcase": "off",
+        "comma-dangle": ["error", "always-multiline"]
     }
 }
