@@ -2,10 +2,10 @@
   "name": "spoiler-bot",
   "version": "1.0.0",
   "description": "Magic spoilers to spam your Slack",
-  "main": "index.js",
   "author": "Evan Cobb <icbat@pm.me>",
   "license": "MIT",
   "scripts": {
+    "start": "node index.js",
     "test": "jest"
   },
   "dependencies": {
