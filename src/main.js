@@ -1,12 +1,6 @@
-const { getCards, trimToRelevantFields } = require('./cards')
+const { getCards, trimToRelevantFields, groupBySet } = require('./cards')
 const slack = require('./slack')
 const cache = require('./db')
-
-const truncateCards = cards => {
-  const length = Math.min(cards.length, 5)
-
-  return cards.slice(0, length)
-}
 
 exports.main = async () => {
   const cards = await getCards()
@@ -18,7 +12,22 @@ exports.main = async () => {
   const index = names.indexOf(lastSeen)
   console.log("the last card we've seen is at index", index, lastSeen)
   const newCards = trimmed.slice(0, index)
-  const truncated = truncateCards(newCards)
 
-  return truncated
+  const grouped = groupBySet(newCards)
+
+  const sendPromises = Object.entries(grouped).map(async ([setName, newCardsInSet]) => {
+    let thread_ts = await cache.get(setName)
+
+    if (!thread_ts) {
+      const response = await slack.sendToChat(`Spoilers for ${setName}`)
+      const new_thread_ts = response.body.ts
+      thread_ts = await cache.getSet(setName, new_thread_ts)
+    }
+
+    const cardsMessage = slack.createMessage(newCardsInSet)
+    return slack.sendToChat(cardsMessage.text, thread_ts, cardsMessage.blocks)
+  })
+  await Promise.all(sendPromises)
+
+  return newCards
 }
