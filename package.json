@@ -9,7 +9,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "got": "^9.6.0",
+    "got": "^11.8.2",
     "redis": "^2.8.0"
   },
   "devDependencies": {
