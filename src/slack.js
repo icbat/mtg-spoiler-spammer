@@ -51,16 +51,24 @@ const createContributeBlock = () => ({
   text: { type: 'mrkdwn', text: "See something you don't like? <https://github.com/icbat/mtg-spoiler-spammer|Fix it>!" },
 })
 
-const sendToChat = message => {
-  if (!message) {
-    return
+const sendToChat = (text, thread_ts, blocks) => {
+  const message = {
+    text,
+    thread_ts,
+    blocks,
+    channel: slack_channel_id,
   }
-  console.log('Sending the message to Slack')
+  console.log('Sending the message to Slack', message.channel, message.text, 'thread:', message.thread_ts)
   const options = {
     body: JSON.stringify(message),
     responseType: 'json',
+    headers: {
+      Authorization: `Bearer ${slack_bot_token}`,
+      'Content-Type': 'application/json',
+    },
+    timeout: 5000,
   }
-  return got.post(sendToSlackUrl, options)
+  return got.post('https://slack.com/api/chat.postMessage', options)
 }
 
 module.exports = {
