@@ -56,3 +56,30 @@ describe('getCards', () => {
     results.map(card => cards.trimToRelevantFields(card))
   })
 })
+
+describe('groupBySet', () => {
+  test('test with real cards', async () => {
+    const cardList = await cards.getCards()
+
+    const result = cards.groupBySet(cardList)
+
+    expect(result).toBeInstanceOf(Object)
+    Object.entries(result).map(([key, value]) => {
+      expect(typeof key).toEqual('string')
+      expect(typeof value).toEqual('object')
+      expect(value.length).toBeGreaterThan(0)
+      return [key, value]
+    })
+  })
+
+  test('test with known mocks', () => {
+    const cardList = [exampleCardNormal, exampleCardDFC]
+
+    const result = cards.groupBySet(cardList)
+
+    expect(result).toEqual({
+      [exampleCardNormal.set_name]: [exampleCardNormal],
+      [exampleCardDFC.set_name]: [exampleCardDFC],
+    })
+  })
+})

@@ -38,7 +38,15 @@ const getPicture = card => {
   return image_uris.normal
 }
 
+const groupBySet = cardList => cardList.reduce((dict, card) => {
+  const set = card.set_name
+  dict[set] = dict[set] || []
+  dict[set] = [...dict[set], card]
+  return dict
+}, {})
+
 module.exports = {
   getCards,
   trimToRelevantFields,
+  groupBySet,
 }
