@@ -1,5 +1,7 @@
 const got = require('got')
-const sendToSlackUrl = require('./env').slack
+
+const slack_bot_token = process.env.SLACK_BOT_TOKEN
+const slack_channel_id = process.env.SLACK_CHANNEL_ID
 
 // https://api.slack.com/reference/messaging/payload
 const createMessage = cards => {
