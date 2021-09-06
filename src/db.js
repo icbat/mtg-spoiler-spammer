@@ -1,4 +1,11 @@
-const getset = (key, newValue) => {
+let cacheInstance
+
+const getCache = () => {
+  if (cacheInstance) {
+    return cacheInstance
+  }
+
+  console.log('Initializing redis connection')
   const redisURL = require('./env').redis
   // https://devcenter.heroku.com/articles/redistogo#using-with-node-js
   const { URL } = require('url')
@@ -7,65 +14,52 @@ const getset = (key, newValue) => {
 
   redis.auth(password)
 
-  return new Promise((resolve, reject) => {
-    console.log('Checking the cache', key, newValue)
+  cacheInstance = redis
 
-    redis.getset(key, newValue, (error, result) => {
-      if (error) {
-        return reject(error)
-      }
-
-      console.log('found', result, error)
-      return resolve(result)
-    })
-  })
+  return cacheInstance
 }
 
-const get = (key) => {
-  const redisURL = require('./env').redis
-  // https://devcenter.heroku.com/articles/redistogo#using-with-node-js
-  const { URL } = require('url')
-  const { port, hostname, password } = new URL(redisURL)
-  const redis = require('redis').createClient(port, hostname)
+const getset = (key, newValue) => new Promise((resolve, reject) => {
+  const redis = getCache()
+  console.log('Checking the cache', key, newValue)
 
-  redis.auth(password)
+  redis.getset(key, newValue, (error, result) => {
+    if (error) {
+      return reject(error)
+    }
 
-  return new Promise((resolve, reject) => {
-    console.log('Checking the cache', key)
-
-    redis.get(key, (error, result) => {
-      if (error) {
-        return reject(error)
-      }
-
-      console.log('found', result, error)
-      return resolve(result)
-    })
+    console.log('found', result, error)
+    return resolve(result)
   })
-}
+})
 
-const set = (key, newValue) => {
-  const redisURL = require('./env').redis
-  // https://devcenter.heroku.com/articles/redistogo#using-with-node-js
-  const { URL } = require('url')
-  const { port, hostname, password } = new URL(redisURL)
-  const redis = require('redis').createClient(port, hostname)
+const get = (key) => new Promise((resolve, reject) => {
+  const redis = getCache()
+  console.log('Checking the cache', key)
 
-  redis.auth(password)
+  redis.get(key, (error, result) => {
+    if (error) {
+      return reject(error)
+    }
 
-  return new Promise((resolve, reject) => {
-    console.log('Setting new value', key, newValue)
-
-    redis.set(key, newValue, (error, result) => {
-      if (error) {
-        return reject(error)
-      }
-
-      console.log('found', result, error)
-      return resolve(result)
-    })
+    console.log('found', result, error)
+    return resolve(result)
   })
-}
+})
+
+const set = (key, newValue) => new Promise((resolve, reject) => {
+  const redis = getCache()
+  console.log('Setting new value', key, newValue)
+
+  redis.set(key, newValue, (error, result) => {
+    if (error) {
+      return reject(error)
+    }
+
+    console.log('found', result, error)
+    return resolve(result)
+  })
+})
 
 module.exports = {
   getset,
