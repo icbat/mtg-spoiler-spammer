@@ -1,4 +1,4 @@
-exports.getset = (key, newValue) => {
+const getset = (key, newValue) => {
   const redisURL = require('./env').redis
   // https://devcenter.heroku.com/articles/redistogo#using-with-node-js
   const { URL } = require('url')
@@ -19,4 +19,8 @@ exports.getset = (key, newValue) => {
       return resolve(result)
     })
   })
+}
+
+module.exports = {
+  getset,
 }
