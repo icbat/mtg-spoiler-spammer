@@ -6,7 +6,7 @@ const getCache = () => {
   }
 
   console.log('Initializing redis connection')
-  const redisURL = require('./env').redis
+  const redisURL = process.env.REDISTOGO_URL
   // https://devcenter.heroku.com/articles/redistogo#using-with-node-js
   const { URL } = require('url')
   const { port, hostname, password } = new URL(redisURL)
