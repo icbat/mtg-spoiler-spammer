@@ -21,7 +21,7 @@ exports.main = async () => {
     if (!thread_ts) {
       const response = await slack.sendToChat(`Spoilers for ${setName}`)
       const new_thread_ts = response.body.ts
-      thread_ts = await cache.getSet(setName, new_thread_ts)
+      thread_ts = await cache.getset(setName, new_thread_ts)
     }
 
     const cardsMessage = slack.createMessage(newCardsInSet)
